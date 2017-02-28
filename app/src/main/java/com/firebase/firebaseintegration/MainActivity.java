@@ -3,13 +3,11 @@ package com.firebase.firebaseintegration;
  * Created by Foram Shah on 27/02/17.
  */
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -20,6 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import utils.Utils;
+
+/***
+ * Allow user to perform changePassword, Send reset email link and signOut from FireBase
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnReset, btnSend;
@@ -34,13 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
-
         //get current user
         user = FirebaseAuth.getInstance().getCurrentUser();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -53,42 +53,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
-
-
         final Button btnChangePassword = (Button) findViewById(R.id.activity_main_btnChangePassword);
         final Button btnSendResetEmail = (Button) findViewById(R.id.activity_main_sending_pass_reset_button);
-
-
+        final Button btnSignOut = (Button) findViewById(R.id.activity_main_btnSignOut);
         btnReset = (Button) findViewById(R.id.activity_main_btnReset);
         btnSend = (Button) findViewById(R.id.activity_main_btnSend);
-
-        final Button btnSignOut = (Button) findViewById(R.id.activity_main_btnSignOut);
-
         etdEmail = (EditText) findViewById(R.id.activity_main_edtEmail);
-
         etdNewPassword = (EditText) findViewById(R.id.activity_main_etdNewPassword);
-
         etdEmail.setVisibility(View.GONE);
         etdNewPassword.setVisibility(View.GONE);
         btnReset.setVisibility(View.GONE);
         btnSend.setVisibility(View.GONE);
-
         progressBar = (ProgressBar) findViewById(R.id.activity_main_progressBar);
-
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
-
         btnChangePassword.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         btnSendResetEmail.setOnClickListener(this);
         btnSend.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
     }
-
-
     /***
-     * This method will signOut from fireBase account
+     * Signs out from fireBase account
      */
     private void signOut() {
         auth.signOut();
@@ -116,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        hideKeyboard(this);
+        Utils.hideKeyboard(this);
         switch (view.getId()) {
             case R.id.activity_main_btnChangePassword:
                 etdEmail.setVisibility(View.GONE);
@@ -187,24 +174,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 signOut();
                 break;
         }
-
     }
-
-    /***
-     * This method will hide keyboard
-     *
-     * @param activity
-     */
-    private static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-
 }
