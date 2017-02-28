@@ -1,6 +1,7 @@
 #Android Getting Started With Firebase-Registration And Login Authentication#
 
 **This demo contains following fuctionality**
+ 
  1.Registration in firebase
  
  2.Login 
